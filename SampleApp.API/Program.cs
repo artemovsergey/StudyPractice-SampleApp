@@ -23,9 +23,11 @@ builder.Services.AddSwaggerGen(c =>
     );
 });
 builder.Services.AddSingleton<IUserRepository, UsersMemoryRepository>();
+builder.Services.AddCors();
 
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader());
 app.MapControllers();
 app.Run();
