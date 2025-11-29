@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleApp.API.Dtos;
 using SampleApp.API.Entities;
@@ -15,11 +16,13 @@ namespace SampleApp.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserRepository _repo;
+    private readonly ITokenService _ts;
     private HMACSHA256 hmac = new HMACSHA256();
 
-    public UsersController(IUserRepository repo)
+    public UsersController(IUserRepository repo, ITokenService ts)
     {
         _repo = repo;
+        _ts = ts;
     }
 
     [SwaggerOperation(
@@ -45,11 +48,13 @@ public class UsersController : ControllerBase
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.Password)),
             PasswordSalt = hmac.Key,
             Name = "",
+            Token = _ts.CreateToken(userDto.Login),
         };
 
         return Ok(_repo.CreateUser(user));
     }
 
+    [Authorize]
     [SwaggerOperation(
         Summary = "Получение списка пользователей",
         Description = "Возвращает все пользователей",

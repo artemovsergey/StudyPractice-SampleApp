@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using SampleApp.API.Data;
 using SampleApp.API.Dtos;
 using SampleApp.API.Entities;
+using SampleApp.API.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SampleApp.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SeedController(SampleAppContext db) : ControllerBase
+public class SeedController(SampleAppContext db, ITokenService ts) : ControllerBase
 {
     [SwaggerOperation(
         Summary = "Генерация тестовых пользователей",
@@ -51,6 +52,7 @@ public class SeedController(SampleAppContext db) : ControllerBase
                     Login = user.Login,
                     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(user.Password)),
                     PasswordSalt = hmac.Key,
+                    Token = ts.CreateToken(user.Login)
                 };
                 userToDb.Add(u);
             }
