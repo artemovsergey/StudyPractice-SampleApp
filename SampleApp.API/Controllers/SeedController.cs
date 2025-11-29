@@ -52,7 +52,7 @@ public class SeedController(SampleAppContext db, ITokenService ts) : ControllerB
                     Login = user.Login,
                     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(user.Password)),
                     PasswordSalt = hmac.Key,
-                    Token = ts.CreateToken(user.Login)
+                    Token = ts.CreateToken(user.Login),
                 };
                 userToDb.Add(u);
             }
