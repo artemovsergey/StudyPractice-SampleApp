@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using SampleApp.API.Data;
 using SampleApp.API.Interfaces;
 using SampleApp.API.Repositories;
 
@@ -22,8 +24,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     );
 });
-builder.Services.AddSingleton<IUserRepository, UsersMemoryRepository>();
+builder.Services.AddScoped<IUserRepository, UsersRepository>();
 builder.Services.AddCors();
+builder.Services.AddDbContext<SampleAppContext>(o =>
+    o.UseNpgsql(builder.Configuration["ConnectionStrings:PostgreSQL"])
+);
 
 var app = builder.Build();
 app.UseSwagger();

@@ -1,7 +1,9 @@
 namespace SampleApp.API.Entities;
 
-public class User
+public class User : Base
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
+    public required string Login {get; set;}
+    public byte[] PasswordHash {get; set;}
+    public byte[] PasswordSalt {get; set;}
 }
