@@ -39,6 +39,11 @@ public class UsersMemoryRepository : IUserRepository
         return result;
     }
 
+    public User FindUserByLogin(string login)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<User> GetUsers()
     {
         return Users;

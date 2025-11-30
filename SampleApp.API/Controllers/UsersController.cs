@@ -54,11 +54,11 @@ public class UsersController : ControllerBase
         return Ok(_repo.CreateUser(user));
     }
 
-    [Authorize]
+    // [Authorize]
     [SwaggerOperation(
         Summary = "Получение списка пользователей",
         Description = "Возвращает все пользователей",
-        OperationId = "GetProducts"
+        OperationId = "GetUsers"
     )]
     [SwaggerResponse(200, "Список пользователей получен успешно", typeof(List<User>))]
     [SwaggerResponse(404, "Пользователи не найдены")]
@@ -105,5 +105,34 @@ public class UsersController : ControllerBase
     public ActionResult DeleteUser(int id)
     {
         return Ok(_repo.DeleteUser(id));
+    }
+
+    [SwaggerOperation(
+        Summary = "Аутентификация пользователя по логину и паролю",
+        Description = "Возвращает пользователя при успешной аутентификации",
+        OperationId = "Login"
+    )]
+    [HttpPost("Login")]
+    public ActionResult Login(UserDto userDto)
+    {
+        var user = _repo.FindUserByLogin(userDto.Login);
+        return CheckPasswordHash(userDto, user);
+    }
+
+    private ActionResult CheckPasswordHash(UserDto userDto, User user)
+    {
+
+        using var hmac = new HMACSHA256(user.PasswordSalt);
+        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.Password));
+
+        for (int i = 0; i < computedHash.Length; i++)
+        {
+            if (computedHash[i] != user.PasswordHash[i])
+            {
+                return Unauthorized($"Неправильный пароль");
+            }
+        }
+
+        return Ok(user);
     }
 }

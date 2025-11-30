@@ -51,4 +51,14 @@ public class UsersRepository : IUserRepository
     {
         throw new NotImplementedException();
     }
+
+    public User FindUserByLogin(string login)
+    {
+        var user = _db.Users.FirstOrDefault(u => u.Login == login);
+        if (user == null)
+        {
+            throw new Exception("Пользователь не найден");
+        }
+        return user;
+    }
 }
