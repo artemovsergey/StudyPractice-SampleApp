@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { loginForbiddenValidator } from '../../validators/loginForbiddenValidator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-sign',
@@ -32,11 +33,12 @@ export class Sign {
   public authService = inject(AuthService);
   public router = inject(Router);
   public signForm: FormGroup;
+  public snackBar: MatSnackBar = inject(MatSnackBar);
 
   constructor() {
     this.signForm = new FormGroup(
       {
-        login: new FormControl('', {validators: [Validators.required]}),
+        login: new FormControl('', { validators: [Validators.required] }),
         password: new FormControl('', [Validators.maxLength(8)]),
       },
       { validators: [loginForbiddenValidator] }
@@ -47,9 +49,14 @@ export class Sign {
     this.authService.register(this.signForm.value).subscribe({
       next: (r) => {
         console.log(r);
+        this.openSnackBar("Пользователь успешно зарегистрирован!")
         this.router.navigate(['/auth']);
       },
       error: (e) => console.log(e.error),
     });
+  }
+
+  private openSnackBar(message: string) {
+    this.snackBar.open(message, '', { duration: 3000 });
   }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SampleApp.API.Data;
 using SampleApp.API.Extensions;
 using SampleApp.API.Interfaces;
+using SampleApp.API.Middlewares;
 using SampleApp.API.Repositories;
 using SampleApp.API.Services;
 using SampleApp.API.Validations;
@@ -23,8 +24,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
-
 var app = builder.Build();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();

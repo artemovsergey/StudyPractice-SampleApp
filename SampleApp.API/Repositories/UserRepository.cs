@@ -49,7 +49,15 @@ public class UsersRepository : IUserRepository
 
     public User FindUserById(int id)
     {
-        throw new NotImplementedException();
+        var user = _db.Users.FirstOrDefault(u => u.Id == id);
+        if (user == null)
+        {
+            throw new Exception("Пользователь не найден");
+        }
+        else
+        {
+            return user;
+        }
     }
 
     public User FindUserByLogin(string login)
