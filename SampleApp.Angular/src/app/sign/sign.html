@@ -1,20 +1,51 @@
 <div class="sign">
-    <h1> Регистрация </h1>
-    <form (ngSubmit)= "sign()" autocomplete="off">
-        <p>
-            <mat-form-field>
-                <mat-label>Login</mat-label>
-                <input matInput name="login" type="text" [(ngModel)] = "model.login" autocomplete="off" />
-            </mat-form-field>
-        </p>
-        <p>
-            <mat-form-field>
-                <mat-label>Password</mat-label>
-                <input matInput name="password" type="password" [(ngModel)] ="model.password" autocomplete="off" />
-            </mat-form-field>
-        </p>
-        <button [disabled]="!model.login || !model.password" color="primary" mat-flat-button type="submit">
-            Создать
-        </button>
-    </form>
+  
+  <!-- <details style="margin-top: 2rem">
+    <summary>Debug info</summary>
+    <pre>Value: {{ signForm.value | json }}</pre>
+    <pre>Status: {{ signForm.status | json }}</pre>
+    <pre>Errors: {{ signForm.errors | json }}</pre>
+  </details> -->
+
+  <div class="alert">
+    @if(signForm.hasError('checkConfirmLogin') && (signForm.touched || signForm.dirty)) {
+      <label> Недопустимый логин пользователя! </label>
+    }
+  </div>
+
+  <h1 style="font-size: 2rem; color: #3f51b5; font-weight: 500">Регистрация</h1>
+  <form (ngSubmit)="sign()" [formGroup]="signForm" autocomplete="off">
+    <p>
+      <mat-form-field>
+        <mat-label>Login</mat-label>
+        <input matInput name="login" type="text" formControlName="login" autocomplete="off" />
+      </mat-form-field>
+      <mat-error>
+        @if(signForm.touched && signForm.get('login')?.hasError('required')) { Логин обязателен. }
+      </mat-error>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          name="password"
+          type="password"
+          formControlName="password"
+          autocomplete="off"
+        />
+      </mat-form-field>
+      <mat-error>
+        @if(signForm.get('password')?.hasError('maxlength')) { Максимум 8 символов. }
+      </mat-error>
+    </p>
+    <button
+      [disabled]="signForm.invalid || signForm.pristine"
+      color="primary"
+      mat-flat-button
+      type="submit"
+    >
+      Создать
+    </button>
+  </form>
 </div>

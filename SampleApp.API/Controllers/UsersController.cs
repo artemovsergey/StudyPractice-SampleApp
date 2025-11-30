@@ -34,13 +34,13 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult CreateUser(UserDto userDto)
     {
-        var validator = new UserValidator();
-        var result = validator.Validate(userDto);
+        // var validator = new UserValidator();
+        // var result = validator.Validate(userDto);
 
-        if (!result.IsValid)
-        {
-            throw new Exception($"{result.Errors.First().ErrorMessage}");
-        }
+        // if (!result.IsValid)
+        // {
+        //     throw new Exception($"{result.Errors.First().ErrorMessage}");
+        // }
 
         var user = new User()
         {
@@ -121,7 +121,6 @@ public class UsersController : ControllerBase
 
     private ActionResult CheckPasswordHash(UserDto userDto, User user)
     {
-
         using var hmac = new HMACSHA256(user.PasswordSalt);
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.Password));
 
