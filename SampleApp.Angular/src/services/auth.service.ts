@@ -13,6 +13,22 @@ export class AuthService {
   currentUser = signal<User | null>(null);
   public router = inject(Router);
 
+  constructor() {
+    this.initializeUser();
+  }
+
+    private initializeUser() {
+      const userJson = localStorage.getItem('user');
+      if (userJson) {
+        const user: User = JSON.parse(userJson);
+        this.currentUser.set(user);
+        console.log('Отправили данные пользователя из localStorage');
+      } else {
+        this.currentUser.set(null);
+        console.log('localStorage не содержит данных о пользователе');
+      }
+    }
+
   login(model: any): Observable<User | null> {
     return this.http
       .post<User>(`${environment.api}/Users/Login`, model, this.generateHeaders())
@@ -43,7 +59,7 @@ export class AuthService {
 
   private generateHeaders = () => {
     return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: '' }),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: `` }),
     };
   };
 }

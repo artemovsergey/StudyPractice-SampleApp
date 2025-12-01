@@ -54,7 +54,7 @@ public class UsersController : ControllerBase
         return Ok(_repo.CreateUser(user));
     }
 
-    // [Authorize]
+    [Authorize]
     [SwaggerOperation(
         Summary = "Получение списка пользователей",
         Description = "Возвращает все пользователей",
