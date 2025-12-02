@@ -22,7 +22,7 @@ export class AuthService {
       if (userJson) {
         const user: User = JSON.parse(userJson);
         this.currentUser.set(user);
-        console.log('Отправили данные пользователя из localStorage');
+        // console.log('Отправили данные пользователя из localStorage');
       } else {
         this.currentUser.set(null);
         console.log('localStorage не содержит данных о пользователе');

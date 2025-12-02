@@ -1,0 +1,7 @@
+<div class="profile">
+  @if(profileUser() != null){
+  <p> Profile User:  {{ profileUser()?.login }}</p>
+  }@else{
+  <p>Нет пользователя по идентификатору 😢</p>
+  }
+</div>

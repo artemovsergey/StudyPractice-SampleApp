@@ -5,10 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterModule, CommonModule, MatIconModule, MatToolbarModule, MatButtonModule],
+  imports: [MatMenuModule, RouterModule, CommonModule, MatIconModule, MatToolbarModule, MatButtonModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
