@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Создание пользователя</h2>
+
+<mat-dialog-content>
+  <div style="display: flex">
+    <form #empForm="ngForm">
+      <mat-form-field>
+        <mat-label>Логин</mat-label>
+        <input
+          matInput
+          required
+          type="text"
+          name="fio"
+          #fio="ngModel"
+          [(ngModel)]="currentUser.login"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Пароль</mat-label>
+        <input
+          matInput
+          required
+          type="password"
+          name="password"
+          #fio="ngModel"
+          [(ngModel)]="currentUser.password"
+          autocomplete="off"
+        />
+      </mat-form-field>
+
+      <!-- Уведомление пользователя -->
+      <div *ngIf="fio.invalid && (fio.dirty || fio.touched)">
+        <div *ngIf="fio.errors?.['required']">ФИО обязательно для заполнения.</div>
+        <div *ngIf="fio.errors?.['minlength']">ФИО должно содержать минимум 3 символа.</div>
+        <div *ngIf="fio.errors?.['maxlength']">ФИО должно содержать не более 100 символов.</div>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-stroked-button color="primary" (click)="cancell()" cdkFocusInitial>Cancel</button>
+  <button type="submit" mat-flat-button color="primary" [disabled]="empForm.invalid" (click)="ok()">
+    Ok
+  </button>
+</mat-dialog-actions>
