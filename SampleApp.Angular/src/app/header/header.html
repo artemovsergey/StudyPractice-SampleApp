@@ -12,11 +12,6 @@
     </button>
   </div>
 
-  <!-- <button mat-button type="button" (click)="authService.logout()">
-    <mat-icon> logout </mat-icon>
-    Выход
-  </button> -->
-
   <button mat-button [matMenuTriggerFor]="menu" style="margin-left: auto">
     {{ authService.currentUser()?.login }}
   </button>

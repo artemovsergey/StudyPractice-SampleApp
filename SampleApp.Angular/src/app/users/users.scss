@@ -1,9 +1,18 @@
-:host{
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    margin: 1rem;
-    gap: 1rem;
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 1rem;
+  gap: 1rem;
+}
+
+.search {
+  margin: 1rem;
+  padding: 1rem;
+}
+
+button{
+   margin-right: 1rem;
 }
 
 // .active {
