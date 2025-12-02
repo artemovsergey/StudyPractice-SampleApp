@@ -1,7 +1,116 @@
-<div class="profile">
-  @if(profileUser() != null){
-  <p> Profile User:  {{ profileUser()?.login }}</p>
-  }@else{
-  <p>Нет пользователя по идентификатору 😢</p>
-  }
+<!-- profile.component.html -->
+<div class="profile-container">
+  <mat-card class="profile-card">
+    <div class="profile-layout">
+      <!-- Левая часть: информация о пользователе -->
+      <mat-card class="user-info-card">
+        <div class="user-header">
+          <!-- Аватар пользователя -->
+          <div class="avatar-container">
+            <img
+              [src]="profileUser()?.avatarUrl || 'avatar-default.png'"
+              alt="Аватар"
+              class="user-avatar"
+            />
+          </div>
+
+          <!-- Основная информация -->
+          <div class="user-details">
+            <h1 class="user-name">{{ profileUser()?.name }}</h1>
+            <p class="user-login">@{{ profileUser()?.login }}</p>
+
+            <!-- Статистика подписок -->
+            <div class="stats-container">
+              <div class="stat-item">
+                <span class="stat-value">{{ subscriptionsCount }}</span>
+                <span class="stat-label">подписок</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">{{ subscribersCount }}</span>
+                <span class="stat-label">подписчиков</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Биография -->
+        <mat-card-content *ngIf="profileUser()?.bio" class="bio-section">
+          <p class="bio-text">{{ profileUser()?.bio }}</p>
+        </mat-card-content>
+
+        <!-- Кнопка подписки -->
+        <mat-card-actions class="action-buttons">
+          <button
+            mat-raised-button
+            [color]="isSubscribed ? 'accent' : 'primary'"
+            (click)="toggleSubscription()"
+            class="subscribe-btn"
+          >
+            <mat-icon>{{ isSubscribed ? 'done' : 'person_add' }}</mat-icon>
+            {{ isSubscribed ? 'Вы подписаны' : 'Подписаться' }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- Правая часть: лента сообщений -->
+      <mat-card class="feed-card">
+        <mat-card-header>
+          <mat-card-title>Лента пользователя</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Список сообщений -->
+          <div *ngIf="posts.length > 0; else emptyFeed" class="posts-list">
+            <mat-card *ngFor="let post of posts" class="post-card">
+              <mat-card-content>
+                <div class="post-header">
+                  <span class="post-date">
+                    {{ post.createdAt | date : 'dd.MM.yyyy HH:mm' }}
+                  </span>
+                </div>
+                <p class="post-content">{{ post.content }}</p>
+
+                <div class="post-stats">
+                  <!-- Лайки -->
+                  <button
+                    mat-icon-button
+                    [color]="post.isLiked ? 'warn' : ''"
+                    (click)="toggleLike(post)"
+                    class="stat-button"
+                  >
+                    <mat-icon>{{ post.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
+                    <span class="stat-count">{{ post.likesCount }}</span>
+                  </button>
+
+                  <!-- Комментарии -->
+                  <button mat-icon-button color="primary" class="stat-button">
+                    <mat-icon>comment</mat-icon>
+                    <span class="stat-count">{{ post.commentsCount }}</span>
+                  </button>
+
+                  <!-- Перепосты -->
+                  <button
+                    mat-icon-button
+                    [color]="post.isReposted ? 'accent' : ''"
+                    (click)="toggleRepost(post)"
+                    class="stat-button"
+                  >
+                    <mat-icon>{{ post.isReposted ? 'repeat_on' : 'repeat' }}</mat-icon>
+                    <span class="stat-count">{{ post.repostsCount }}</span>
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <ng-template #emptyFeed>
+            <div class="empty-feed">
+              <mat-icon class="empty-icon">article</mat-icon>
+              <p>Пользователь еще не опубликовал ни одного сообщения</p>
+            </div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-card>
 </div>
