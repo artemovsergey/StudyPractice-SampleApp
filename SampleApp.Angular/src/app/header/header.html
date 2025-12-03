@@ -18,7 +18,7 @@
 
   <mat-menu #menu="matMenu">
     <button mat-menu-item [routerLink]="['/users', authService.currentUser()?.id]">Профиль</button>
-    <button mat-menu-item>Обновление</button>
+    <button mat-menu-item [routerLink]="['/edit', authService.currentUser()?.id]">Обновление</button>
     <button (click)="authService.logout()" mat-menu-item type="button">
       <mat-icon>logout</mat-icon>
       Выход

@@ -10,15 +10,13 @@
     }
   </mat-form-field>
 
-  <button matTooltip="Добавить пользователя" mat-flat-button color="primary" type="button" (click)="addUser()">
-    <mat-icon>add</mat-icon>
-  </button>
+  <button matButton="elevated" (click)="addUser()">Создать</button>
 </div>
 
 @if(users().length === 0) {
 <p>Нет пользователей</p>
 } @else {
-<h1>Пользователи: {{ currentUsers().length }} из {{ users().length }}</h1>
+<span>Пользователи: {{ currentUsers().length }} из {{ users().length }}</span>
 
 <table
   mat-table
@@ -37,6 +35,19 @@
       Login
     </th>
     <td mat-cell *matCellDef="let element">{{ element.login }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td
+      mat-cell
+      *matCellDef="let element"
+      (click)="delete(element)"
+      matTooltip="Удалить пользователя"
+      width="100px"
+    >
+      <mat-icon>delete</mat-icon>
+    </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -1,0 +1,41 @@
+<div class="editUser">
+  <h1 style="font-size: 2rem; color: #3f51b5; font-weight: 500">Обновление</h1>
+  <form (ngSubmit)="edit()">
+    <p>
+      <mat-form-field>
+        <mat-label>Имя</mat-label>
+        <input
+          matInput
+          name="name"
+          type="text"
+          form
+          [(ngModel)]="editUser().name"
+          autocomplete="off"
+        />
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>Логин</mat-label>
+        <input
+          matInput
+          name="login"
+          type="text"
+          form
+          [(ngModel)]="editUser().login"
+          autocomplete="off"
+        />
+      </mat-form-field>
+    </p>
+    
+    <button
+      [disabled]="!editUser().login || !editUser().name"
+      mat-flat-button
+      color="primary"
+      type="submit"
+    >
+      <mat-icon> update </mat-icon>
+      Сохранить
+    </button>
+  </form>
+</div>

@@ -73,12 +73,17 @@ public class UsersController : ControllerBase
         Description = "Возвращает отредактированного пользователя",
         OperationId = "UpdateUser"
     )]
-    [SwaggerResponse(200, "Пользователь обновлен успешно", typeof(User))]
-    [SwaggerResponse(404, "Пользователь не найден")]
+    [SwaggerResponse(200, "Пользователь обновлен успешно", typeof(EditUserDto))]
+    [SwaggerResponse(500, "Пользователь не найден")]
     [HttpPut]
-    public ActionResult UpdateUser(User user)
+    public ActionResult<User> UpdateUser(EditUserDto editUserDto)
     {
-        return Ok(_repo.EditUser(user, user.Id));
+        var currentUser = _repo.FindUserById(editUserDto.Id);
+
+        currentUser.Name = editUserDto.Name;
+        currentUser.Login = editUserDto.Login;
+
+        return Ok(_repo.EditUser(currentUser, currentUser.Id));
     }
 
     [SwaggerOperation(

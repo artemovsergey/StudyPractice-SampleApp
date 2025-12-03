@@ -37,14 +37,22 @@ public class UsersRepository : IUserRepository
         }
     }
 
-    public User EditUser(User user, int id)
+    public User EditUser(User editedUser, int id)
     {
-        throw new NotImplementedException();
+        if (_db.Users.Find(id) == null)
+            throw new Exception($"Нет пользователя с id={id}");
+
+        _db.Users.Update(editedUser);
+        _db.SaveChanges();
+        return editedUser;
     }
 
     public bool DeleteUser(int id)
     {
-        throw new NotImplementedException();
+        var user = FindUserById(id);
+        _db.Users.Remove(user);
+        _db.SaveChanges();
+        return true;
     }
 
     public User FindUserById(int id)

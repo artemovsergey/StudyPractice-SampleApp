@@ -6,9 +6,12 @@ import { Sign } from './sign/sign';
 import { authGuard } from '../guards/auth-guard';
 import { preventUnsavedChangesGuard } from '../guards/prevent-unsaved-changed.guard';
 import { Profile } from './profile/profile';
+import { EditUser } from './edit-user/edit-user';
 
 export const routes: Routes = [
+    
     { path: 'users/:id', component: Profile, canActivate: [authGuard] },
+    { path: 'edit/:id', component: EditUser, canActivate: [authGuard] },
     { path: 'sign', component: Sign, canDeactivate: [preventUnsavedChangesGuard]},
     { path: 'auth', component: Auth },
     { path: 'users', component: Users, canActivate: [authGuard] },

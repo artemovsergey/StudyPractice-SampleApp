@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AddUserDialog } from '../add-user-dialog/add-user-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-users',
@@ -25,6 +26,7 @@ import { MatDialog } from '@angular/material/dialog';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatButtonModule
   ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
@@ -34,7 +36,7 @@ export class Users implements OnInit {
   currentUsers = signal<User[]>([]);
 
   usersService = inject(UsersService);
-  displayedColumns: string[] = ['id', 'login'];
+  displayedColumns: string[] = ['id', 'login', 'delete'];
   _liveAnnouncer = inject(LiveAnnouncer);
   dataSource = new MatTableDataSource<User>([]);
   searchText: string = '';
@@ -115,6 +117,20 @@ export class Users implements OnInit {
           complete: () => console.info('complete'),
         });
       }
+    });
+  }
+
+  delete(user: any) {
+    console.log(`delete ${user.login}`);
+
+    this.usersService.del(user.id).subscribe({
+      next: (v) => console.log(v),
+      error: (e) => console.log(e),
+    });
+
+    this.usersService.getAll().subscribe({
+      next: (v) => { this.users.set(v), this.currentUsers.set(v), this.dataSource.data = v},
+      error: (e) => console.log(e),
     });
   }
 }
