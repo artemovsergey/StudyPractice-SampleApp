@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using SampleApp.API.Exceptions;
 using SampleApp.API.Response;
 
@@ -22,7 +23,7 @@ public class ExceptionHandlerMiddleware
         _next = next;
     }
 
-    // когда мы работает с middleware у нас есть доступ к контексту HttpContext
+    // когда мы работаем с middleware у нас есть доступ к контексту HttpContext
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -32,6 +33,7 @@ public class ExceptionHandlerMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogWarning("Возникла ошибка...");
             _logger.LogError(ex, ex.Message);
             await ConvertExceptionAsync(context, ex);
         }
@@ -47,10 +49,26 @@ public class ExceptionHandlerMiddleware
 
         switch (exception)
         {
-            case Npgsql.PostgresException ex:
-                httpStatusCode = HttpStatusCode.InternalServerError;
-                message = ex.Message;
-                messagedetail = ex.StackTrace?.ToString();
+            case DbUpdateException dbUpdateEx:
+                // Если это DbUpdateException, проверяем его InnerException
+                if (dbUpdateEx.InnerException is Npgsql.PostgresException pgEx)
+                {
+                    httpStatusCode = HttpStatusCode.BadRequest;
+                    message = "Database error occurred";
+
+                    if (pgEx.SqlState == "23503")
+                    {
+                        message =
+                            "Foreign key constraint violation. The referenced record does not exist.";
+                    }
+
+                    messagedetail = pgEx.Message;
+                    break;
+                }
+                // Если не PostgresException, обрабатываем как общую ошибку БД
+                httpStatusCode = HttpStatusCode.BadRequest;
+                message = "Error occurred while saving data";
+                messagedetail = dbUpdateEx.Message;
                 break;
 
             case BadHttpRequestException badRequestException:
