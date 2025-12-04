@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SampleApp.API.Dtos;
 using SampleApp.API.Entities;
 using SampleApp.API.Interfaces;
+using SampleApp.API.Models;
 using SampleApp.API.Validations;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -34,14 +35,6 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult CreateUser(UserDto userDto)
     {
-        // var validator = new UserValidator();
-        // var result = validator.Validate(userDto);
-
-        // if (!result.IsValid)
-        // {
-        //     throw new Exception($"{result.Errors.First().ErrorMessage}");
-        // }
-
         var user = new User()
         {
             Login = userDto.Login,
@@ -52,6 +45,26 @@ public class UsersController : ControllerBase
         };
 
         return Ok(_repo.CreateUser(user));
+    }
+
+    [SwaggerOperation(
+        Summary = "Получение списка пользователей c параметрами",
+        Description = "Возвращает объект ApiResult<User>: список пользователей с параметрами",
+        OperationId = "GetUsersByParams"
+    )]
+    [SwaggerResponse(200, "Список пользователей получен успешно", typeof(ApiResult<User>))]
+    [HttpGet("option")]
+    public ActionResult<ApiResult<User>> GetUsersByParams([FromQuery] Option opt)
+    {
+        return Ok(
+            new ApiResult<User>()
+            {
+                PageNumber = opt.PageNumber,
+                PageSize = opt.PageSize,
+                Data = _repo.GetUsers(opt),
+                Count = _repo.GetUsers().Count,
+            }
+        );
     }
 
     [Authorize]

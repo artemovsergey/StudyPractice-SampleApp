@@ -1,5 +1,6 @@
 using SampleApp.API.Entities;
 using SampleApp.API.Interfaces;
+using SampleApp.API.Models;
 
 namespace SampleApp.API.Repositories;
 
@@ -47,5 +48,10 @@ public class UsersMemoryRepository : IUserRepository
     public List<User> GetUsers()
     {
         return Users;
+    }
+
+    public List<User> GetUsers(Option opt)
+    {
+        throw new NotImplementedException();
     }
 }

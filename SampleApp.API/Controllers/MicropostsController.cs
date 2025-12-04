@@ -27,6 +27,7 @@ public class MicropostsController(IMicropostRepository repo) : ControllerBase
                 PageNumber = opt.PageNumber,
                 PageSize = opt.PageSize,
                 Data = repo.GetMicroposts(opt),
+                Count = repo.GetMicroposts().Count,
             }
         );
     }
