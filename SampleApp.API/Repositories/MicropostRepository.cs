@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SampleApp.API.Data;
@@ -20,6 +21,7 @@ public class MicropostRepository(SampleAppContext db) : IMicropostRepository
         var microposts = db.Microposts.AsNoTracking();
 
         var result = microposts
+            .OrderBy(m => m.Content)
             .Skip((opt.PageNumber - 1) * opt.PageSize)
             .Take(opt.PageSize)
             .ToList();

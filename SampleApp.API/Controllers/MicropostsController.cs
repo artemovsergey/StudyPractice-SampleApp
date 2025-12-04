@@ -14,14 +14,21 @@ public class MicropostsController(IMicropostRepository repo) : ControllerBase
 {
     [SwaggerOperation(
         Summary = "Получение списка сообщений c параметрами",
-        Description = "Возвращает все сообщения по параметру",
+        Description = "Возвращает объект ApiResult<Micropost>: список сообщений с параметрами",
         OperationId = "GetMicropostsByParams"
     )]
-    [SwaggerResponse(200, "Список пользователей получен успешно", typeof(List<Micropost>))]
+    [SwaggerResponse(200, "Список пользователей получен успешно", typeof(ApiResult<Micropost>))]
     [HttpGet("option")]
-    public ActionResult<List<Micropost>> GetMicropostsByParams([FromQuery] Option opt)
+    public ActionResult<ApiResult<Micropost>> GetMicropostsByParams([FromQuery] Option opt)
     {
-        return Ok(repo.GetMicroposts(opt));
+        return Ok(
+            new ApiResult<Micropost>()
+            {
+                PageNumber = opt.PageNumber,
+                PageSize = opt.PageSize,
+                Data = repo.GetMicroposts(opt),
+            }
+        );
     }
 
     [SwaggerOperation(
@@ -35,7 +42,6 @@ public class MicropostsController(IMicropostRepository repo) : ControllerBase
     {
         return Ok(repo.GetMicroposts());
     }
-
 
     [SwaggerOperation(
         Summary = "Создание сообщения",
