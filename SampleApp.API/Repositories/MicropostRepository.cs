@@ -1,6 +1,4 @@
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using SampleApp.API.Data;
 using SampleApp.API.Entities;
 using SampleApp.API.Exceptions;
@@ -58,5 +56,4 @@ public class MicropostRepository(SampleAppContext db) : IMicropostRepository
         db.SaveChanges();
         return post;
     }
-
 }
