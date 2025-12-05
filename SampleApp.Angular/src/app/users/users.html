@@ -55,10 +55,20 @@
 </table>
 
 <mat-paginator
-  [pageSizeOptions]="[5, 10, 20]"
-  showFirstLastButtons
+  [length]="totalItems()"
+  [pageIndex]="pageNumber() - 1"
+  [pageSize]="pageSize()"
+  (page)="onPageChange($event)"
   aria-label="Select page of periodic elements"
+  showFirstLastButtons
+  [pageSizeOptions]="[5, 10, 25, 50]"
 >
 </mat-paginator>
+
+<!-- <mat-paginator
+  aria-label="Select page of periodic elements"
+  showFirstLastButtons
+  [pageSizeOptions]="[5, 10, 25, 50]">
+</mat-paginator> -->
 
 }

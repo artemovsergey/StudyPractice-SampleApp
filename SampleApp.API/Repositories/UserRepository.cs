@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using SampleApp.API.Data;
 using SampleApp.API.Entities;
 using SampleApp.API.Interfaces;
+using SampleApp.API.Models;
 
 namespace SampleApp.API.Repositories;
 
@@ -12,6 +14,19 @@ public class UsersRepository : IUserRepository
     public UsersRepository(SampleAppContext db)
     {
         _db = db;
+    }
+
+    public List<User> GetUsers(Option opt)
+    {
+        var users = _db.Users.AsNoTracking();
+
+        var result = users
+            .OrderBy(m => m.Login)
+            .Skip((opt.PageNumber - 1) * opt.PageSize)
+            .Take(opt.PageSize)
+            .ToList();
+
+        return result;
     }
 
     public List<User> GetUsers()
