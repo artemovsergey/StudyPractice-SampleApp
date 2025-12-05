@@ -29,11 +29,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddFluentValidationServices();
 
 var app = builder.Build();
+
 app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 app.MapControllers();
 app.Run();

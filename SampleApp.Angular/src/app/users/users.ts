@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  inject,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import User from '../../models/user.entity';
 import { UsersService } from '../../services/users.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -13,6 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AddUserDialog } from '../add-user-dialog/add-user-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-users',
@@ -30,6 +38,7 @@ import { MatButtonModule } from '@angular/material/button';
   ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Users implements OnInit {
   users = signal<User[]>([]);
@@ -41,8 +50,9 @@ export class Users implements OnInit {
   dataSource = new MatTableDataSource<User>([]);
   searchText: string = '';
   dialog = inject(MatDialog);
+  messageService = inject(MessageService);
 
-  pageSize = signal<number>(10);
+  pageSize = signal<number>(5);
   pageNumber = signal<number>(1);
   totalItems = signal<number>(0);
 
@@ -59,17 +69,9 @@ export class Users implements OnInit {
   //   }
   // }
 
-  ngOnInit() {
-    // this.usersService.getAll().subscribe({
-    //   next: (v) => {
-    //     console.log(v);
-    //     this.users.set(v);
-    //     this.currentUsers.set(v);
-    //     this.dataSource.data = v;
-    //   },
-    //   error: (e) => console.error(e),
-    // });
+  @ViewChild(MatPaginator) matPaginator!: MatPaginator;
 
+  ngOnInit() {
     this.loadData();
   }
 
@@ -77,10 +79,11 @@ export class Users implements OnInit {
     this.usersService.getAllbyParams(this.pageSize(), this.pageNumber()).subscribe({
       next: (apiResult) => {
         console.log(apiResult);
+        this.dataSource.data = apiResult.data;
         this.users.set(apiResult.data);
         this.currentUsers.set(apiResult.data);
-        this.dataSource.data = apiResult.data;
         this.totalItems.set(apiResult.count);
+        console.log(this.totalItems());
       },
       error: (e) => console.error(e),
     });
@@ -96,7 +99,7 @@ export class Users implements OnInit {
 
   search() {
     console.log(this.searchText);
-    var result = this.users().filter((u) => u.login.includes(this.searchText));
+    let result = this.users().filter((u) => u.login.includes(this.searchText));
     this.currentUsers.set(result);
     this.dataSource.data = this.currentUsers();
   }
@@ -118,21 +121,12 @@ export class Users implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result as User) {
         console.log(result);
-
         this.usersService.create(result).subscribe({
-          next: (v) => console.log(v),
-          error: (e) => console.log(e),
-        });
-
-        this.usersService.getAll().subscribe({
           next: (v) => {
-            console.log(v);
-            this.users.set(v);
-            this.currentUsers.set(v);
-            this.dataSource.data = v;
+            this.messageService.message(`Пользователь ${v.login} добавлен`);
+            this.loadData();
           },
-          error: (e) => console.error(e),
-          complete: () => console.info('complete'),
+          error: (e) => console.log(e),
         });
       }
     });
@@ -142,13 +136,10 @@ export class Users implements OnInit {
     console.log(`delete ${user.login}`);
 
     this.usersService.del(user.id).subscribe({
-      next: (v) => console.log(v),
-      error: (e) => console.log(e),
-    });
-
-    this.usersService.getAll().subscribe({
       next: (v) => {
-        this.users.set(v), this.currentUsers.set(v), (this.dataSource.data = v);
+        console.log(v);
+        this.messageService.message(`Пользователь удален ${user.login}`);
+        this.loadData();
       },
       error: (e) => console.log(e),
     });

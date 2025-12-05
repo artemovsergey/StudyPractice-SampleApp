@@ -6,13 +6,26 @@
   padding: 0;
 }
 
+:root {
+  @include mat.snack-bar-overrides(
+    (
+      container-color: #3F51B5,
+      button-color: #3F51B5,
+    )
+  );
+}
+
 html {
-  @include mat.theme((color: (primary: mat.$azure-palette,
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: Roboto,
       density: 0,
-    ));
+    )
+  );
 }
 
 body {
@@ -23,5 +36,5 @@ body {
 }
 
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }

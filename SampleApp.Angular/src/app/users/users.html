@@ -16,7 +16,7 @@
 @if(users().length === 0) {
 <p>Нет пользователей</p>
 } @else {
-<span>Пользователи: {{ currentUsers().length }} из {{ users().length }}</span>
+<span>Пользователи: {{ currentUsers().length }} из {{ totalItems() }}</span>
 
 <table
   mat-table
@@ -64,11 +64,5 @@
   [pageSizeOptions]="[5, 10, 25, 50]"
 >
 </mat-paginator>
-
-<!-- <mat-paginator
-  aria-label="Select page of periodic elements"
-  showFirstLastButtons
-  [pageSizeOptions]="[5, 10, 25, 50]">
-</mat-paginator> -->
 
 }
