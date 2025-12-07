@@ -4,7 +4,7 @@ using SampleApp.API.Entities;
 
 namespace SampleApp.API.Validations;
 
-public class UserValidator : AbstractValidator<UserDto>
+public class UserValidator : AbstractValidator<LoginDto>
 {
     public UserValidator()
     {

@@ -9,6 +9,7 @@ public interface IMicropostRepository
     Micropost CreateMicropost(Micropost post);
     List<Micropost> GetMicroposts();
     List<Micropost> GetMicroposts(Option opt);
+    List<Micropost> GetMicropostsByUser(int id);
 
     Micropost DeleteMicropost(int id);
     Micropost FindMicropostById(int id);

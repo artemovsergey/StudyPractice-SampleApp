@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import User from '../../models/user.entity';
 
 @Component({
   selector: 'app-add-user-dialog',
@@ -16,8 +15,8 @@ import User from '../../models/user.entity';
     MatDialogModule,
     CommonModule,
     FormsModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
   templateUrl: './add-user-dialog.html',
   styleUrl: './add-user-dialog.scss',
 })
@@ -25,13 +24,7 @@ export class AddUserDialog {
   dialogRef = inject(MatDialogRef<AddUserDialog>);
   data = inject<any[]>(MAT_DIALOG_DATA);
 
-  currentUser: User = {
-    id: 0,
-    login:'',
-    password:'',
-    name:'',
-    token:'',
-  };
+  currentUser: any = { };
 
   ok() {
     console.log('Передан: ', this.currentUser);

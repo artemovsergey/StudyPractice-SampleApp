@@ -1,7 +1,11 @@
-namespace SampleApp.API.Dtos;
+using System.Text.Json.Serialization;
 
-public class UserDto
+namespace SampleApp.API.Entities;
+
+public class UserDto : Base
 {
-    public string Login { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public required string Login { get; set; }
+    public string Avatar { get; set; } = string.Empty;
+    public string Token { get; set; } = string.Empty;
 }

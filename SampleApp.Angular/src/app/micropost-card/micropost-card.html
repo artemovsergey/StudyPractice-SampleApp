@@ -1,0 +1,22 @@
+<mat-card class="example-card" appearance="outlined">
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>{{autorName()}}</mat-card-title>
+    <mat-card-subtitle>{{autorLogin()}}</mat-card-subtitle>
+  </mat-card-header>
+  <!-- <img mat-card-image src="https://material.angular.dev/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+  <img mat-card-image [src]="autorAvatar()" alt="Photo of autor">
+  <mat-card-content>
+    <p>
+      {{content()}}
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button matButton>
+      <mat-icon>favorite</mat-icon>
+    </button>
+    <button matButton>
+       <mat-icon>share</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

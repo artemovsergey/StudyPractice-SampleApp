@@ -21,6 +21,8 @@ import { AddUserDialog } from '../add-user-dialog/add-user-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MessageService } from '../../services/message.service';
+import { LoadingSpinner } from '../loading-spinner/loading-spinner';
+import { BusyService } from '../../services/busy.service';
 
 @Component({
   selector: 'app-users',
@@ -34,7 +36,7 @@ import { MessageService } from '../../services/message.service';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatButtonModule,
+    MatButtonModule
   ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
@@ -51,7 +53,7 @@ export class Users implements OnInit {
   searchText: string = '';
   dialog = inject(MatDialog);
   messageService = inject(MessageService);
-
+  busyService = inject(BusyService);
   pageSize = signal<number>(5);
   pageNumber = signal<number>(1);
   totalItems = signal<number>(0);

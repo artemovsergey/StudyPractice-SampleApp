@@ -1,18 +1,18 @@
 <mat-toolbar color="primary">
   @if(authService.currentUser() != null){
   <div>
-    <button mat-button [routerLink]="['/']">
+    <button mat-button [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
       <mat-icon> home </mat-icon>
       Home
     </button>
 
-    <button mat-button [routerLink]="['/users']">
+    <button mat-button [routerLink]="['/users']" routerLinkActive="active">
       <mat-icon> people </mat-icon>
       Пользователи
     </button>
   </div>
 
-  <button mat-button [matMenuTriggerFor]="menu" style="margin-left: auto">
+  <button mat-button [matMenuTriggerFor]="menu" style="margin-left: auto" routerLinkActive="active">
     {{ authService.currentUser()?.login }}
   </button>
 
@@ -26,7 +26,7 @@
   </mat-menu>
 
   } @else{
-  <button mat-button [routerLink]="['/auth']">
+  <button mat-button [routerLink]="['/auth']" routerLinkActive="active">
     <mat-icon> login </mat-icon>
     Авторизация
   </button>

@@ -6,3 +6,11 @@ mat-toolbar{
 mat-icon{
    margin-right: 0.5rem !important;
 }
+
+button{
+    margin-right: 0.5rem;
+}
+.active{
+//    text-decoration: underline;
+   border: 1px solid white;
+}

@@ -12,6 +12,12 @@ public class TokenService : ITokenService
 
     public TokenService(IConfiguration config)
     {
+        if (config["TokenPublicKey"]! == null)
+            throw new Exception("Нет публичного ключа шифрования в appsettings");
+
+        if (config["TokenPublicKey"]!.Length < 64)
+            throw new Exception("Публичный ключ должен быть больше 64 символов");
+
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenPublicKey"]!));
     }
 

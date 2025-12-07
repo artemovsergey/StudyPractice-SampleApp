@@ -16,12 +16,14 @@ namespace SampleApp.API.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
+    private readonly IMicropostRepository _postRepo;
     private readonly IUserRepository _repo;
     private readonly ITokenService _ts;
     private HMACSHA256 hmac = new HMACSHA256();
 
-    public UsersController(IUserRepository repo, ITokenService ts)
+    public UsersController(IMicropostRepository postRepo, IUserRepository repo, ITokenService ts)
     {
+        _postRepo = postRepo;
         _repo = repo;
         _ts = ts;
     }
@@ -33,7 +35,7 @@ public class UsersController : ControllerBase
     )]
     [SwaggerResponse(200, "Пользователь создан успешно", typeof(User))]
     [HttpPost]
-    public ActionResult CreateUser(UserDto userDto)
+    public ActionResult CreateUser(LoginDto userDto)
     {
         var user = new User()
         {
@@ -131,13 +133,39 @@ public class UsersController : ControllerBase
         OperationId = "Login"
     )]
     [HttpPost("Login")]
-    public ActionResult Login(UserDto userDto)
+    public ActionResult Login(LoginDto userDto)
     {
         var user = _repo.FindUserByLogin(userDto.Login);
         return CheckPasswordHash(userDto, user);
     }
 
-    private ActionResult CheckPasswordHash(UserDto userDto, User user)
+    [SwaggerOperation(
+        Summary = "Найти все сообщения пользователя по id",
+        Description = "Возвращает список сообщений List<Microposts>",
+        OperationId = "GetMicropostByUser"
+    )]
+    [HttpGet("{userId}/microposts")]
+    public ActionResult<List<MicropostDto>> GetMicropostByUser(int userId)
+    {
+        return _postRepo
+            .GetMicropostsByUser(userId)
+            .Select(m => new MicropostDto()
+            {
+                Id = m.Id,
+                Content = m.Content,
+                AttachImage = m.AttachImage!,
+                User = new UserDto()
+                {
+                    Id = m.User!.Id,
+                    Avatar = m.User!.Avatar,
+                    Login = m.User.Login,
+                    Name = m.User.Name,
+                },
+            })
+            .ToList<MicropostDto>();
+    }
+
+    private ActionResult CheckPasswordHash(LoginDto userDto, User user)
     {
         using var hmac = new HMACSHA256(user.PasswordSalt);
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(userDto.Password));

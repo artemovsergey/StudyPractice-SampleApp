@@ -1,9 +1,8 @@
-export default interface User {
-  id: number;
+import { Base } from './base.entity';
+
+export default interface User extends Base {
   name: string;
   login: string;
-  password: string;
+  avatar: string;
   token: string;
-  bio?: string; // Добавил опциональное поле для биографии
-  avatarUrl?: string; // Добавил для аватарки пользователя
 }

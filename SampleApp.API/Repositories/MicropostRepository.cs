@@ -56,4 +56,10 @@ public class MicropostRepository(SampleAppContext db) : IMicropostRepository
         db.SaveChanges();
         return post;
     }
+
+    public List<Micropost> GetMicropostsByUser(int id)
+    {
+        var microposts = db.Microposts.Include(m => m.User).Where(m => m.UserId == id).ToList();
+        return microposts;
+    }
 }

@@ -51,7 +51,7 @@ public class MicropostsController(IMicropostRepository repo) : ControllerBase
     )]
     [SwaggerResponse(201, "Сообщение успешно создано", typeof(Micropost))]
     [HttpPost]
-    public ActionResult<List<Micropost>> CreateMicroposts(MicropostDto postDto)
+    public ActionResult<List<Micropost>> CreateMicroposts(MicropostCreateDto postDto)
     {
         var post = new Micropost() { Content = postDto.Content, UserId = postDto.UserId };
         return Created("", repo.CreateMicropost(post));

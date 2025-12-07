@@ -25,7 +25,7 @@ public class SeedController(SampleAppContext db, ITokenService ts) : ControllerB
     {
         using var hmac = new HMACSHA256();
 
-        Faker<UserDto> _faker = new Faker<UserDto>("en")
+        Faker<LoginDto> _faker = new Faker<LoginDto>("en")
             .RuleFor(u => u.Login, f => GenerateLogin(f).Trim())
             .RuleFor(u => u.Password, f => GeneratePassword(f).Trim().Replace(" ", ""));
 

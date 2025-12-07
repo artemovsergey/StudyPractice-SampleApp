@@ -1,35 +1,30 @@
 <div class="editUser">
+  <div class="alert">
+    @if(editForm.hasError('checkConfirmLogin') && (editForm.touched || editForm.dirty)) {
+    <label> Недопустимый логин пользователя! </label>
+    }
+  </div>
+
   <h1 style="font-size: 2rem; color: #3f51b5; font-weight: 500">Обновление</h1>
-  <form (ngSubmit)="edit()">
+  <form (ngSubmit)="edit()" [formGroup]="editForm">
     <p>
       <mat-form-field>
         <mat-label>Имя</mat-label>
-        <input
-          matInput
-          name="name"
-          type="text"
-          form
-          [(ngModel)]="editUser().name"
-          autocomplete="off"
-        />
+        <input matInput name="name" type="text" form formControlName="name" autocomplete="off" />
       </mat-form-field>
     </p>
     <p>
       <mat-form-field>
         <mat-label>Логин</mat-label>
-        <input
-          matInput
-          name="login"
-          type="text"
-          form
-          [(ngModel)]="editUser().login"
-          autocomplete="off"
-        />
+        <input matInput name="login" type="text" form formControlName="login" autocomplete="off" />
       </mat-form-field>
+      <mat-error>
+        @if(editForm.touched && editForm.dirty && editForm.get('login')?.hasError('required')) { Логин обязателен. }
+      </mat-error>
     </p>
-    
+
     <button
-      [disabled]="!editUser().login || !editUser().name"
+      [disabled]="editForm.invalid || editForm.pristine"
       mat-flat-button
       color="primary"
       type="submit"
