@@ -1,13 +1,13 @@
+using System.Data.Common;
 using System.Security.Cryptography;
 using System.Text;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SampleApp.API.Dtos;
 using SampleApp.API.Entities;
 using SampleApp.API.Interfaces;
+using SampleApp.API.Mappers;
 using SampleApp.API.Models;
-using SampleApp.API.Validations;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace SampleApp.API.Controllers;
@@ -16,13 +16,15 @@ namespace SampleApp.API.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
+    private readonly IRelationRepository _relationRepo;
     private readonly IMicropostRepository _postRepo;
     private readonly IUserRepository _repo;
     private readonly ITokenService _ts;
     private HMACSHA256 hmac = new HMACSHA256();
 
-    public UsersController(IMicropostRepository postRepo, IUserRepository repo, ITokenService ts)
+    public UsersController(IRelationRepository relationRepo, IMicropostRepository postRepo, IUserRepository repo, ITokenService ts)
     {
+        _relationRepo = relationRepo;
         _postRepo = postRepo;
         _repo = repo;
         _ts = ts;
@@ -75,12 +77,12 @@ public class UsersController : ControllerBase
         Description = "Возвращает все пользователей",
         OperationId = "GetUsers"
     )]
-    [SwaggerResponse(200, "Список пользователей получен успешно", typeof(List<User>))]
+    [SwaggerResponse(200, "Список пользователей получен успешно", typeof(List<UserDto>))]
     [SwaggerResponse(404, "Пользователи не найдены")]
     [HttpGet]
-    public ActionResult GetUsers()
+    public ActionResult<List<UserDto>> GetUsers()
     {
-        return Ok(_repo.GetUsers());
+        return Ok(_repo.GetUsers().Select(user => user.ToDto()));
     }
 
     [SwaggerOperation(
@@ -164,6 +166,50 @@ public class UsersController : ControllerBase
             })
             .ToList<MicropostDto>();
     }
+
+
+    [HttpGet("{id}/followers")]
+    public ActionResult<List<UserDto>> GetFollowers(int id)
+    {
+       _repo.FindUserById(id);
+
+       return _repo.GetFollowers(id).Select(user => user.ToDto()).ToList();
+    }
+
+    [HttpGet("{id}/followeds")]
+    public ActionResult<List<UserDto>> GetFolloweds(int id)
+    {
+       _repo.FindUserById(id);
+
+       return _repo.GetFolloweds(id).Select(user => user.ToDto()).ToList();
+    }
+
+    [HttpPost("{id}/follow/{userId}")]
+    public ActionResult<bool> Follow(int id, int userId)
+    {
+        var relation = new Relation(id,userId)
+        {
+             FollowedId = userId,
+             FollowerId = id
+        };
+
+        _relationRepo.CreateRelation(relation);
+
+        return Ok(true);
+    }
+
+    [HttpDelete("{id}/unfollow/{userId}")]
+    public ActionResult<bool> UnFollow(int id, int userId)
+    {
+        var relation = _relationRepo.FindRelation(id, userId);
+
+        _relationRepo.DeleteRelation(relation);
+
+        return Ok(true);
+    }
+
+
+
 
     private ActionResult CheckPasswordHash(LoginDto userDto, User user)
     {

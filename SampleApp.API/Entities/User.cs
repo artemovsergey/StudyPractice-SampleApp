@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace SampleApp.API.Entities;
@@ -13,4 +14,6 @@ public class User : Base
 
     // [JsonIgnore]
     public IEnumerable<Micropost>? Microposts { get; set; }
+    public IEnumerable<Relation>? FollowedRelations { get; set; }
+    public IEnumerable<Relation>? FollowerRelations { get; set; }
 }

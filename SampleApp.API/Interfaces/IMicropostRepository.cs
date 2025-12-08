@@ -1,5 +1,4 @@
 using SampleApp.API.Entities;
-using SampleApp.API.Migrations;
 using SampleApp.API.Models;
 
 namespace SampleApp.API.Interfaces;

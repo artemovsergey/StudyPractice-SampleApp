@@ -12,8 +12,8 @@ using SampleApp.API.Data;
 namespace SampleApp.API.Migrations
 {
     [DbContext(typeof(SampleAppContext))]
-    [Migration("20251204055600_CreateMicropost")]
-    partial class CreateMicropost
+    [Migration("20251208082746_Init2")]
+    partial class Init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,13 @@ namespace SampleApp.API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AttachImage")
+                        .HasColumnType("text");
+
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -48,12 +52,14 @@ namespace SampleApp.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedAt");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Micropost");
+                    b.ToTable("Microposts");
                 });
 
-            modelBuilder.Entity("SampleApp.API.Entities.User", b =>
+            modelBuilder.Entity("SampleApp.API.Entities.Relation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,13 +70,54 @@ namespace SampleApp.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Login")
+                    b.Property<int>("FollowedId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FollowedId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.HasIndex("FollowerId", "FollowedId")
+                        .IsUnique();
+
+                    b.ToTable("Relations", t =>
+                        {
+                            t.HasCheckConstraint("CK_Relation_SelfFollow", "\"FollowedId\" != \"FollowerId\"");
+                        });
+                });
+
+            modelBuilder.Entity("SampleApp.API.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Avatar")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -89,6 +136,9 @@ namespace SampleApp.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Login")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
@@ -103,8 +153,31 @@ namespace SampleApp.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SampleApp.API.Entities.Relation", b =>
+                {
+                    b.HasOne("SampleApp.API.Entities.User", "Followed")
+                        .WithMany("FollowedRelations")
+                        .HasForeignKey("FollowedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SampleApp.API.Entities.User", "Follower")
+                        .WithMany("FollowerRelations")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Followed");
+
+                    b.Navigation("Follower");
+                });
+
             modelBuilder.Entity("SampleApp.API.Entities.User", b =>
                 {
+                    b.Navigation("FollowedRelations");
+
+                    b.Navigation("FollowerRelations");
+
                     b.Navigation("Microposts");
                 });
 #pragma warning restore 612, 618

@@ -45,6 +45,16 @@ public class UsersMemoryRepository : IUserRepository
         throw new NotImplementedException();
     }
 
+    public List<User> GetFolloweds(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<User> GetFollowers(int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<User> GetUsers()
     {
         return Users;

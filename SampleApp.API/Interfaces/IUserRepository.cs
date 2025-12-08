@@ -18,4 +18,8 @@ public interface IUserRepository
     User FindUserById(int id);
 
     User FindUserByLogin(string login);
+
+    List<User> GetFollowers(int id);
+    
+    List<User> GetFolloweds(int id);
 }

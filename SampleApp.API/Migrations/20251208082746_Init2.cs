@@ -5,25 +5,23 @@
 namespace SampleApp.API.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTokenToUsers : Migration
+    public partial class Init2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Token",
-                table: "Users",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
+            migrationBuilder.AddCheckConstraint(
+                name: "CK_Relation_SelfFollow",
+                table: "Relations",
+                sql: "\"FollowedId\" != \"FollowerId\"");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Token",
-                table: "Users");
+            migrationBuilder.DropCheckConstraint(
+                name: "CK_Relation_SelfFollow",
+                table: "Relations");
         }
     }
 }
