@@ -22,7 +22,12 @@ public class UsersController : ControllerBase
     private readonly ITokenService _ts;
     private HMACSHA256 hmac = new HMACSHA256();
 
-    public UsersController(IRelationRepository relationRepo, IMicropostRepository postRepo, IUserRepository repo, ITokenService ts)
+    public UsersController(
+        IRelationRepository relationRepo,
+        IMicropostRepository postRepo,
+        IUserRepository repo,
+        ITokenService ts
+    )
     {
         _relationRepo = relationRepo;
         _postRepo = postRepo;
@@ -167,31 +172,26 @@ public class UsersController : ControllerBase
             .ToList<MicropostDto>();
     }
 
-
     [HttpGet("{id}/followers")]
     public ActionResult<List<UserDto>> GetFollowers(int id)
     {
-       _repo.FindUserById(id);
+        _repo.FindUserById(id);
 
-       return _repo.GetFollowers(id).Select(user => user.ToDto()).ToList();
+        return _repo.GetFollowers(id).Select(user => user.ToDto()).ToList();
     }
 
     [HttpGet("{id}/followeds")]
     public ActionResult<List<UserDto>> GetFolloweds(int id)
     {
-       _repo.FindUserById(id);
+        _repo.FindUserById(id);
 
-       return _repo.GetFolloweds(id).Select(user => user.ToDto()).ToList();
+        return _repo.GetFolloweds(id).Select(user => user.ToDto()).ToList();
     }
 
     [HttpPost("{id}/follow/{userId}")]
     public ActionResult<bool> Follow(int id, int userId)
     {
-        var relation = new Relation(id,userId)
-        {
-             FollowedId = userId,
-             FollowerId = id
-        };
+        var relation = new Relation(id, userId) { FollowedId = userId, FollowerId = id };
 
         _relationRepo.CreateRelation(relation);
 
@@ -208,8 +208,44 @@ public class UsersController : ControllerBase
         return Ok(true);
     }
 
+    [HttpGet("{id}/feedMessages")]
+    public ActionResult<List<MicropostDto>> GetFeedMessages(int id)
+    {
+        // найдем id всех, на кого подписан пользователь
+        var followedUsers = _repo.GetFolloweds(id).Select(u => u.Id);
 
+        // соберем их сообщения
+        List<Micropost> microposts = [];
+        foreach (var followedId in followedUsers)
+        {
+            microposts.AddRange(_postRepo.GetMicropostsByUser(followedId));
+        }
+        ;
 
+        // найдем сообщения самого пользователя
+        var messagesSelf = _postRepo.GetMicropostsByUser(id);
+
+        // добавим сообщения к общему потоку
+        microposts.AddRange(messagesSelf);
+
+        // сортировка по дате создания по убыванию
+        var result = microposts
+            .OrderByDescending(m => m.CreatedAt)
+            .Select(m => new MicropostDto()
+            {
+                Content = m.Content,
+                AttachImage = m.AttachImage,
+                User = new UserDto
+                {
+                    Name = m.User!.Name,
+                    Avatar = m.User!.Avatar,
+                    Login = m.User!.Login,
+                },
+            })
+            .ToList();
+
+        return result;
+    }
 
     private ActionResult CheckPasswordHash(LoginDto userDto, User user)
     {

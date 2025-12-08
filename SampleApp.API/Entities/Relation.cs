@@ -12,7 +12,7 @@ public class Relation : Base
     {
         FollowedId = followedId;
         FollowerId = followerId;
-        
+
         if (FollowedId == FollowerId)
             throw new Exception("Пользователь не может быть подписан сам на себя");
     }

@@ -95,22 +95,22 @@ public class UsersRepository : IUserRepository
 
     public List<User> GetFollowers(int id)
     {
-        var followers = _db.Relations
-                            .Include(r => r.Follower)
-                            .Where(r => r.FollowedId == id)
-                            .Select(r => r.Follower)
-                            .ToList();
+        var followers = _db
+            .Relations.Include(r => r.Follower)
+            .Where(r => r.FollowedId == id)
+            .Select(r => r.Follower)
+            .ToList();
 
         return followers;
     }
 
     public List<User> GetFolloweds(int id)
     {
-        var followeds = _db.Relations
-                            .Include(r => r.Followed)
-                            .Where(r => r.FollowerId == id)
-                            .Select(r => r.Followed)
-                            .ToList();
+        var followeds = _db
+            .Relations.Include(r => r.Followed)
+            .Where(r => r.FollowerId == id)
+            .Select(r => r.Followed)
+            .ToList();
 
         return followeds;
     }

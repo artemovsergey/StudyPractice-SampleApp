@@ -20,6 +20,6 @@ public interface IUserRepository
     User FindUserByLogin(string login);
 
     List<User> GetFollowers(int id);
-    
+
     List<User> GetFolloweds(int id);
 }

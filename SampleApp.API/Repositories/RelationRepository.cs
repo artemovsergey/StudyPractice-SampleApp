@@ -6,10 +6,11 @@ namespace SampleApp.API.Repositories;
 
 public class RelationRepository(SampleAppContext db) : IRelationRepository
 {
-
     public Relation FindRelation(int followerId, int followedId)
     {
-        var r = db.Relations.Where(r => r.FollowedId == followedId && r.FollowerId == followerId).FirstOrDefault();
+        var r = db
+            .Relations.Where(r => r.FollowedId == followedId && r.FollowerId == followerId)
+            .FirstOrDefault();
         return r != null ? r : throw new Exception("Нет такой связи");
     }
 

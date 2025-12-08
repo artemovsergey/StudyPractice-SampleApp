@@ -17,18 +17,23 @@ public class SampleAppContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Настройка для всех сущностей, унаследованных от Base
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(Base).IsAssignableFrom(e.ClrType)))
+        foreach (
+            var entityType in modelBuilder
+                .Model.GetEntityTypes()
+                .Where(e => typeof(Base).IsAssignableFrom(e.ClrType))
+        )
         {
             var entity = modelBuilder.Entity(entityType.ClrType);
 
             // CreatedAt - значение при вставке
-            entity.Property(nameof(Base.CreatedAt))
+            entity
+                .Property(nameof(Base.CreatedAt))
                 .HasDefaultValueSql("NOW()") // или "CURRENT_TIMESTAMP"
                 .ValueGeneratedOnAdd();
 
             // UpdatedAt - значение при вставке и обновлении
-            entity.Property(nameof(Base.UpdatedAt))
+            entity
+                .Property(nameof(Base.UpdatedAt))
                 .HasDefaultValueSql("NOW()")
                 .ValueGeneratedOnAddOrUpdate();
         }

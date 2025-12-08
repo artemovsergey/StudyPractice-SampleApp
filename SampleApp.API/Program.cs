@@ -8,7 +8,6 @@ using SampleApp.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-// builder.Services.AddControllerServices();
 
 builder.Services.AddScoped<IUserRepository, UsersRepository>();
 builder.Services.AddScoped<IMicropostRepository, MicropostRepository>();
