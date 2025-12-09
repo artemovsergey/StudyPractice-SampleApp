@@ -76,7 +76,7 @@ public class UsersController : ControllerBase
         );
     }
 
-    [Authorize]
+    // [Authorize]
     [SwaggerOperation(
         Summary = "Получение списка пользователей",
         Description = "Возвращает все пользователей",
