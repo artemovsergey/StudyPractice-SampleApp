@@ -1,9 +1,0 @@
-{
-    "chat.mcp.serverSampling": {
-        "SampleApp/.vscode/mcp.json: angular-cli": {
-            "allowedModels": [
-                "copilot/auto"
-            ]
-        }
-    }
-}
