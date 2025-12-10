@@ -1,4 +1,4 @@
-import { User } from '@/lib/models/user';
+import {User} from '@/models/user';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
